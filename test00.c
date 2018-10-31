@@ -15,7 +15,7 @@ void function(int thr_id)
    }
 
    printf("Thread %d is done...\n", thr_id);
-   //t_terminate();
+   t_terminate();
 }
 
 int main(void)

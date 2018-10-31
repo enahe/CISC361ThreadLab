@@ -10,15 +10,14 @@ void t_yield()
   tcb *readyHead = ready;
   tcb *tmp = ready;
   runningHead->next = NULL;
-  printf("%d\n", ready->thread_id);
+  //printf("%d\n", ready->thread_id);
   while (tmp->next) {
      tmp = tmp->next;
-     printf("traversing the ready queue");
   }
   tmp->next = runningHead;
   running = ready;
   ready = ready->next;
-  swapcontext(&(tmp->thread_context), &(running->thread_context));
+  swapcontext(&(runningHead->thread_context), &(running->thread_context));
 }
 
 void t_init()
@@ -68,4 +67,17 @@ void t_create(void(*function)(int), int id, int priority)
      printf("adding to the end of the tcb, with thread at %p and thread id %d \n", (void *) addTcb, addTcb->thread_id);
   }
 
+}
+void t_terminate() {
+   struct tcb * tmp = running;
+   running = ready;
+   if (running != NULL) {
+   running->next = NULL;
+   }
+   if (ready != NULL) {
+   ready = ready->next;
+   }
+  // free(tmp->thread_context);
+   free(tmp);
+   setcontext(&(running->thread_context));
 }
