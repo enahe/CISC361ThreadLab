@@ -70,14 +70,15 @@ void t_create(void(*function)(int), int id, int priority)
 }
 void t_terminate() {
    struct tcb * tmp = running;
-   running = ready;
-   if (running != NULL) {
-   running->next = NULL;
+   tcb * readyHead = ready;
+   if (readyHead != NULL) {
+   readyHead -> next == NULL;
    }
+   running = readyHead;
    if (ready != NULL) {
    ready = ready->next;
    }
-  // free(tmp->thread_context);
+   free(tmp->thread_context.uc_stack.ss_sp);
    free(tmp);
    setcontext(&(running->thread_context));
 }
