@@ -34,7 +34,7 @@ int main(void)
    }
   
    printf("Begin shutdown...\n");
-  // t_shutdown();
+   t_shutdown();
    printf("Done with shutdown...\n");
 
    return 0;

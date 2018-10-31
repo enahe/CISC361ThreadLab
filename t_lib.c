@@ -82,3 +82,25 @@ void t_terminate() {
    free(tmp);
    setcontext(&(running->thread_context));
 }
+
+void t_shutdown() {
+   struct tcb * readyHead = ready;
+   struct tcb * next;
+   
+   if(running != NULL) {
+   free(running->thread_context.uc_stack.ss_sp);
+   free(running);
+   running = NULL;
+   }
+   
+   while(readyHead != NULL) {
+   next = readyHead -> next;
+   free(readyHead->thread_context.uc_stack.ss_sp);
+   free(readyHead);
+   readyHead = next;
+   }
+   ready = NULL;
+ 
+  
+}
+
