@@ -107,7 +107,6 @@ void t_shutdown() {
 int sem_init(sem_t **sp, int sem_count) {
     struct sem_t* newSem = (sem_t *) malloc(sizeof(sem_t));
     newSem->count = sem_count;
-    newSem->q = running;
     *sp = newSem;
     return sem_count;
 }
