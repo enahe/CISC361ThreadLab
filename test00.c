@@ -80,7 +80,7 @@ int main(void) {
       t_yield();
    }
 
-   //sem_destroy(&s);
+   sem_destroy(&s);
    t_shutdown();
 
    return 0;

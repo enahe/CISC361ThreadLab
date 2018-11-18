@@ -166,6 +166,19 @@ void sem_signal(sem_t *sp) {
 }
 }
 
+void sem_destroy(sem_t ** sp) {
+    sem_t * spHead = * sp;
+    tcb * next;
+    
+    while (spHead->q != NULL ) {
+   next = spHead->q-> next;
+   free(spHead->q->thread_context.uc_stack.ss_sp);
+   free(spHead->q);
+   spHead = spHead->q;
+    }
+    free(spHead);
+}
+
 
 
 
