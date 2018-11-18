@@ -11,6 +11,7 @@ void t_yield()
   tcb *tmp = ready;
   runningHead->next = NULL;
   //printf("%d\n", ready->thread_id);
+  if(tmp != NULL) {
   while (tmp->next) {
      tmp = tmp->next;
   }
@@ -18,6 +19,7 @@ void t_yield()
   running = ready;
   ready = ready->next;
   swapcontext(&(runningHead->thread_context), &(running->thread_context));
+  }
 }
 
 void t_init()
@@ -159,7 +161,6 @@ void sem_signal(sem_t *sp) {
      }
     tmp->next = semQueue;
     printf("Removed thread id %d\n", semQueue->thread_id);
-    printf("New sem queue head %d\n", sp->q->thread_id);
    sigrelse();
    
 }
