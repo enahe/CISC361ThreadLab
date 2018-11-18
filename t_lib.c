@@ -107,10 +107,61 @@ void t_shutdown() {
 int sem_init(sem_t **sp, int sem_count) {
     struct sem_t* newSem = (sem_t *) malloc(sizeof(sem_t));
     newSem->count = sem_count;
+    newSem->q = NULL;
     *sp = newSem;
     return sem_count;
 }
 
+void sem_wait(sem_t *sp) {
+    sighold();
+    sp->count = sp->count -1;
+    tcb * semQueue = sp->q;
+    tcb * readyHead = ready;
+    tcb *runningHead = running;
+    tcb * tmp = sp->q;
+    if (runningHead != NULL) {
+       runningHead->next = NULL;
+    }
+    if (sp->count < 0) {
+     if (tmp == NULL) {
+        tmp = runningHead; 
+     }
+     else {
+        while (tmp -> next) {
+           tmp = tmp ->next;
+         }
+     tmp -> next = runningHead;
+     }
+     running = ready;
+     ready = ready->next;
+     swapcontext(&(runningHead->thread_context), &(running->thread_context));
+   sigrelse();
+   //sleep(1000);
+    }
+    else {
+      sigrelse();
+    }
+}
+
+void sem_signal(sem_t *sp) {
+   sighold();
+   sp->count = sp->count + 1; 
+   if (sp->count <= 0) {
+    tcb *runningHead = sp->q;
+    tcb *readyHead = ready;
+    tcb *tmp = ready;
+    if (runningHead != NULL) {
+    runningHead->next = NULL;
+    }
+    printf("removing");
+    while (tmp->next) {
+        tmp = tmp->next;
+     }
+    tmp->next = runningHead;
+   }
+   sigrelse();
+   
+}
 
 
 
