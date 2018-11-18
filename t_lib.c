@@ -54,17 +54,14 @@ void t_create(void(*function)(int), int id, int priority)
   addTcb -> thread_id = id;
   addTcb -> thread_priority = priority;
   addTcb -> next = NULL;
-  printf("Starting new context at %p\n", (void *) &(addTcb->thread_context));
   if (ready == NULL) {
      ready = addTcb;
-     printf("Starting new ready thread at %p, with thread id %d \n", (void *) ready, ready->thread_id);
   }
   else {
      while (tempTcb -> next != NULL) {
      tempTcb = tempTcb -> next;
      }
      tempTcb-> next = addTcb;
-     printf("adding to the end of the tcb, with thread at %p and thread id %d \n", (void *) addTcb, addTcb->thread_id);
   }
 
 }
@@ -123,20 +120,23 @@ void sem_wait(sem_t *sp) {
        runningHead->next = NULL;
     }
     if (sp->count < 0) {
-     if (tmp == NULL) {
-        tmp = runningHead; 
+     if (sp->q == NULL) {
+        sp->q = runningHead; 
+        printf("thread to be added to the head of sp queue: %d\n", sp->q->thread_id);
      }
      else {
         while (tmp -> next) {
            tmp = tmp ->next;
          }
      tmp -> next = runningHead;
+     printf("thread to be added to the end of sp queue: %d\n", tmp->next->thread_id);
      }
      running = ready;
      ready = ready->next;
      swapcontext(&(runningHead->thread_context), &(running->thread_context));
    sigrelse();
    //sleep(1000);
+   
     }
     else {
       sigrelse();
@@ -147,20 +147,22 @@ void sem_signal(sem_t *sp) {
    sighold();
    sp->count = sp->count + 1; 
    if (sp->count <= 0) {
-    tcb *runningHead = sp->q;
+    tcb *semQueue = sp->q;
     tcb *readyHead = ready;
     tcb *tmp = ready;
-    if (runningHead != NULL) {
-    runningHead->next = NULL;
+    sp->q = sp->q->next;
+    if (semQueue != NULL) {
+    semQueue->next = NULL;
     }
-    printf("removing");
     while (tmp->next) {
         tmp = tmp->next;
      }
-    tmp->next = runningHead;
-   }
+    tmp->next = semQueue;
+    printf("Removed thread id %d\n", semQueue->thread_id);
+    printf("New sem queue head %d\n", sp->q->thread_id);
    sigrelse();
    
+}
 }
 
 
