@@ -179,6 +179,14 @@ void sem_destroy(sem_t ** sp) {
     free(spHead);
 }
 
+int mbox_create(mbox **mb) {
+ struct mbox* newMbox = (mbox *) malloc(sizeof(mbox));
+    newMbox->msg = (messageNode *) malloc(sizeof(messageNode));
+    newMbox->mbox_sem = (sem_t *) malloc(sizeof(sem_t));
+    *mb = newMbox;
+    return 1;
+}
+
 
 
 
