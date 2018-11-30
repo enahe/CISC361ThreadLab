@@ -187,6 +187,12 @@ int mbox_create(mbox **mb) {
     return 1;
 }
 
+void mbox_destroy(mbox **mb) {
+struct mbox * tempBox = *mb;
+free(tempBox->msg);
+free(tempBox);
+}
+
 void mbox_deposit(mbox *mb, char *msg, int len) {
 struct messageNode * newMessage =(messageNode *) malloc(sizeof(messageNode));
 struct messageNode * headMessage = mb->msg;

@@ -44,7 +44,7 @@ int main(void) {
    t_create(producer, 2, 1);
    t_create(consumer, 3, 1);  
    t_yield();
-  // mbox_destroy(&mb);
+   mbox_destroy(&mb);
 
    t_shutdown();
    printf("Done with mailbox test...\n");
