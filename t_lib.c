@@ -193,16 +193,17 @@ struct messageNode * headMessage = mb->msg;
 newMessage->message = malloc(len+1);
 strcpy(newMessage->message, msg);
 newMessage->len = len;
-if (headMessage == NULL) {
-   headMessage = newMessage;
-   printf("First message added");
+newMessage->next = NULL;
+if (mb->msg == NULL) {
+    mb->msg = newMessage;
+   printf("First message added\n");
   }
 else {
-    while (headMessage->next != NULL) {
+    while (headMessage->next) {
            headMessage = headMessage -> next;
     }
     headMessage->next = newMessage;
-    printf("Message added to the end of the mailbox");
+    printf("Message added to the end of the mailbox\n");
 }
 }
 
