@@ -181,10 +181,29 @@ void sem_destroy(sem_t ** sp) {
 
 int mbox_create(mbox **mb) {
  struct mbox* newMbox = (mbox *) malloc(sizeof(mbox));
-    newMbox->msg = (messageNode *) malloc(sizeof(messageNode));
-    newMbox->mbox_sem = (sem_t *) malloc(sizeof(sem_t));
+    newMbox->msg = NULL;
+    newMbox->mbox_sem = NULL;
     *mb = newMbox;
     return 1;
+}
+
+void mbox_deposit(mbox *mb, char *msg, int len) {
+struct messageNode * newMessage =(messageNode *) malloc(sizeof(messageNode));
+struct messageNode * headMessage = mb->msg;
+newMessage->message = malloc(len+1);
+strcpy(newMessage->message, msg);
+newMessage->len = len;
+if (headMessage == NULL) {
+   headMessage = newMessage;
+   printf("First message added");
+  }
+else {
+    while (headMessage->next != NULL) {
+           headMessage = headMessage -> next;
+    }
+    headMessage->next = newMessage;
+    printf("Message added to the end of the mailbox");
+}
 }
 
 

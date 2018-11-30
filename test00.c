@@ -13,13 +13,13 @@ void producer(int id)
 {
   int i;
   char mymsg[30];
-/*
+
   for (i = 0; i < 2; i++) {
     sprintf(mymsg, "%s - tid %d", msg[i], id);
     printf("Producer (%d): [%s] [length=%d]\n", id, mymsg, strlen(mymsg));
-    //mbox_deposit(mb, mymsg, strlen(mymsg));
+    mbox_deposit(mb, mymsg, strlen(mymsg));
   }
-*/
+
   t_terminate();
 }
 

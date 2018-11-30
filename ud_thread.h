@@ -2,6 +2,7 @@
  * thread library function prototypes
  */
 #include <ucontext.h>
+#include <string.h>
 struct tcb {
 	  int         thread_id;
           int         thread_priority;
