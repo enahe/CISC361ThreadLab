@@ -207,6 +207,21 @@ else {
 }
 }
 
+void mbox_withdraw(mbox *mb, char *msg, int *len) {
+struct messageNode * headMessage = mb->msg;
+if (headMessage == NULL) {
+    len = 0;
+}
+else {
+   strcpy(msg, headMessage->message);
+   len = headMessage->len;
+}
+if (mb->msg != NULL) {
+   mb->msg = mb->msg->next;
+   free(headMessage -> message);
+   free(headMessage);
+}
+}
 
 
 

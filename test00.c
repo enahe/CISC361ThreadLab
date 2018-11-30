@@ -28,12 +28,10 @@ void consumer(int id)
   int i;
   int len;
   char mesg[1024];
-/*
   for (i = 0; i < 4; i++) {
     mbox_withdraw(mb, mesg, &len);
     printf("Message from mailbox: [%s]\n", mesg);
   }
-*/
   t_terminate();
 }
 
