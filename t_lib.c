@@ -3,6 +3,7 @@
 
 tcb *running;
 tcb *ready;
+mbox *messageQueue;
 
 void t_yield()
 { 
@@ -31,6 +32,7 @@ void t_init()
   initialSetup -> thread_id = 0;
   initialSetup -> thread_priority = 0;
   initialSetup -> next = NULL;
+  mbox_create(&(messageQueue)); 
   printf("Starting new context at %p\n", (void *) &(initialSetup->thread_context));
   running = initialSetup;
   printf("Starting new running thread at %p, with thread id %d \n", (void *) running);
@@ -227,6 +229,30 @@ if (mb->msg != NULL) {
    free(headMessage -> message);
    free(headMessage);
 }
+}
+
+void send(int tid, char *msg, int len) {
+struct messageNode * newMessage =(messageNode *) malloc(sizeof(messageNode));
+struct messageNode * headMessage = messageQueue->msg;
+newMessage->message = malloc(len+1);
+strcpy(newMessage->message, msg);
+newMessage->len = len;
+newMessage->receiver = tid;
+newMessage->sender = running->thread_id;
+newMessage->next = NULL;
+if (messageQueue->msg == NULL) {
+    messageQueue->msg = newMessage;
+   printf("First message added\n");
+  }
+else {
+    while (headMessage->next) {
+           headMessage = headMessage -> next;
+    }
+    headMessage->next = newMessage;
+    printf("Message added to the end of the mailbox\n");
+}
+
+
 }
 
 
