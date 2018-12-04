@@ -240,6 +240,9 @@ newMessage->len = len;
 newMessage->receiver = tid;
 newMessage->sender = running->thread_id;
 newMessage->next = NULL;
+//sem_init(&(messageQueue->mbox_sem),1);
+
+//sem_wait(&(messageQueue->mbox_sem));
 if (messageQueue->msg == NULL) {
     messageQueue->msg = newMessage;
    printf("First message added\n");
@@ -251,9 +254,48 @@ else {
     headMessage->next = newMessage;
     printf("Message added to the end of the mailbox\n");
 }
-
-
+//sem_signal(&(messageQueue->mbox_sem));
 }
+
+
+void receive(int *tid, char *msg, int *len) {
+struct messageNode * headMessage = messageQueue->msg;
+struct messageNode * otherHead = messageQueue->msg;
+struct messageNode * tempMessage;
+if (headMessage == NULL) {
+    len = 0;
+}
+else {
+     if (((headMessage->receiver) == (running -> thread_id)) && (headMessage->sender == *tid)) { 
+      strcpy(msg, headMessage->message);
+      *len = headMessage->len;
+      if (headMessage != NULL) {
+      messageQueue->msg = headMessage -> next;
+      free(headMessage -> message);
+      free(headMessage);
+    }
+    else {
+    while (headMessage->next) {
+      if (((headMessage->receiver) == (running -> thread_id)) && (headMessage->sender == *tid)) {
+      strcpy(msg, headMessage->message);
+      *len = headMessage->len;
+      if (headMessage != NULL) {
+      tempMessage = headMessage;
+      tempMessage ->next = headMessage->next;
+      free(headMessage -> message);
+      free(headMessage);
+      break; 
+      }
+     }
+    else {
+    headMessage = headMessage -> next;
+    }
+    }
+   }
+}
+}
+} 
+
 
 
 

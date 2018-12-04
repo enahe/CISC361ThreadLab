@@ -33,7 +33,7 @@ void catcher(int thr_id)
    snd_id = 1;
    for (i = j = 0; i < 3; i++, j++) {
       printf("[Catch] - This is thread %d [%d]...\n", thr_id, j);
-     // receive(&snd_id, buffer, &len);
+      receive(&snd_id, buffer, &len);
 
       if(len) {
          printf("Catcher got [%s] from thread %d\n", buffer, snd_id);
