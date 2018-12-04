@@ -33,6 +33,7 @@ void t_init()
   initialSetup -> thread_priority = 0;
   initialSetup -> next = NULL;
   mbox_create(&(messageQueue)); 
+  sem_init(&(messageQueue->mbox_sem),0);
   printf("Starting new context at %p\n", (void *) &(initialSetup->thread_context));
   running = initialSetup;
   printf("Starting new running thread at %p, with thread id %d \n", (void *) running);
@@ -240,9 +241,8 @@ newMessage->len = len;
 newMessage->receiver = tid;
 newMessage->sender = running->thread_id;
 newMessage->next = NULL;
-//sem_init(&(messageQueue->mbox_sem),1);
 
-//sem_wait(&(messageQueue->mbox_sem));
+
 if (messageQueue->msg == NULL) {
     messageQueue->msg = newMessage;
    printf("First message added\n");
@@ -254,7 +254,7 @@ else {
     headMessage->next = newMessage;
     printf("Message added to the end of the mailbox\n");
 }
-//sem_signal(&(messageQueue->mbox_sem));
+sem_signal(&(messageQueue->mbox_sem));
 }
 
 
@@ -262,11 +262,12 @@ void receive(int *tid, char *msg, int *len) {
 struct messageNode * headMessage = messageQueue->msg;
 struct messageNode * otherHead = messageQueue->msg;
 struct messageNode * tempMessage;
+sem_wait(&(messageQueue->mbox_sem));
 if (headMessage == NULL) {
     len = 0;
 }
 else {
-     if (((headMessage->receiver) == (running -> thread_id)) && (headMessage->sender == *tid)) { 
+     if (((headMessage->receiver) == (running -> thread_id)) && (headMessage->sender == *tid) || (*tid == 0)) { 
       strcpy(msg, headMessage->message);
       *len = headMessage->len;
       if (headMessage != NULL) {
